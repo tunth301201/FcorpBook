@@ -1,0 +1,16 @@
+{
+  "name": "fcorpook",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/tunth301201/FcorpBook.git",
+  "author": "Selina <tunth301201@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@elastic/elasticsearch": "^8.8.1",
+    "fastify": "^4.18.0",
+    "nodemon": "^2.0.22"
+  },
+  "scripts": {
+    "start": "nodemon index.js"
+  }
+}
