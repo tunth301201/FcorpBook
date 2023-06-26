@@ -118,6 +118,146 @@ fastify.put('/books/:id', async (request, reply) => {
 });
 
 
+// API retrieve all comments of a specific book from Elasticsearch
+fastify.get('/books/comments/:bookId', async (request, reply) => {
+  const { bookId } = request.params;
+
+  try {
+    const response = await client.search({
+      index: 'comments',
+      size: 1000, // Retrieve a maximum of 1000 comments (adjust as needed)
+      body: {
+        query: {
+          match: {
+            bookId,
+          },
+        },
+      },
+    });
+
+    const comments = response.hits.hits.map((hit) => hit._source);
+    reply.send(comments);
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send('Internal Server Error');
+  }
+});
+
+
+// API add a comment for a specific book in Elasticsearch
+fastify.post('/books/comments/:bookId', async (request, reply) => {
+  const { bookId } = request.params;
+  const { name, text } = request.body;
+
+  // Validate incoming data
+  if (!name || !text) {
+    reply.status(400).send('Missing required fields');
+    return;
+  }
+
+  try {
+    const response = await client.index({
+      index: 'comments',
+      body: {
+        bookId,
+        name,
+        text,
+      },
+    });
+
+    reply.send("Created a new comment with id " + response._id);
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send('Internal Server Error');
+  }
+});
+
+
+// API reply to a comment of a specific book in Elasticsearch
+fastify.post('/books/comments/:bookId/replies/:commentId', async (request, reply) => {
+  const { bookId, commentId } = request.params;
+  const { name, text } = request.body;
+
+  // Validate incoming data
+  if (!name || !text) {
+    reply.status(400).send('Missing required fields');
+    return;
+  }
+
+  try {
+    const response = await client.index({
+      index: 'comments',
+      body: {
+        bookId,
+        name,
+        text,
+        parentId: commentId,
+      },
+    });
+
+    reply.send("Created a new reply with id " + response._id);
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send('Internal Server Error');
+  }
+});
+
+
+// API edit a comment of a specific book in Elasticsearch
+fastify.put('/books/comments/:bookId/:commentId', async (request, reply) => {
+  const { bookId, commentId } = request.params;
+  const { name, text } = request.body;
+
+  // Validate incoming data
+  if (!name && !text) {
+    reply.status(400).send('At least one field must be provided for update');
+    return;
+  }
+
+  try {
+    const response = await client.update({
+      index: 'comments',
+      id: commentId,
+      body: {
+        doc: {
+          name,
+          text,
+        },
+      },
+    });
+
+    if (!response.result) {
+      reply.status(404).send('Comment not found');
+    } else {
+      reply.send("The comment with id " + commentId + " has been updated");
+    }
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send('Internal Server Error');
+  }
+});
+
+
+// API delete a comment of a specific book in Elasticsearch
+fastify.delete('/books/comments/:bookId/:commentId', async (request, reply) => {
+  const { commentId } = request.params;
+
+  try {
+    const response = await client.delete({
+      index: 'comments',
+      id: commentId,
+    });
+
+    if (response.result === 'deleted') {
+      reply.send("The comment with id " + commentId + " has been deleted");
+    } else {
+      reply.status(404).send('Comment not found');
+    }
+  } catch (error) {
+    console.error(error);
+    reply.status(500).send('Internal Server Error');
+  }
+});
 
 
 // Start the server
