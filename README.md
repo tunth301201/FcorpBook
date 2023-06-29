@@ -56,7 +56,7 @@ Open the index.js file and modify the node property of the Client object to matc
 4. Start the API:
 
 - Run Elasticsearch: `bin/elasticsearch.bat`
-The Elasticsearch will start running on http://localhost:8080
+The Elasticsearch will start running on http://localhost:9200
 
 - `npm start`
 The API will start running on http://localhost:3000.
