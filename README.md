@@ -17,24 +17,22 @@ To configure Elasticsearch, follow these steps:
 
 `#http.port: 9200`
 
-xpack.security.enabled: true
+`xpack.security.enabled: true
 xpack.security.authc:
 anonymous:
     username: anonymous_user
     roles: superuser
-    authz_exception: false
+    authz_exception: false`
 
-
-xpack.security.http.ssl:
+`xpack.security.http.ssl:
   enabled: false
-  keystore.path: certs/http.p12
+  keystore.path: certs/http.p12`
 
-
-xpack.security.transport.ssl:
+`xpack.security.transport.ssl:
   enabled: false
   verification_mode: certificate
   keystore.path: certs/transport.p12
-  truststore.path: certs/transport.p12
+  truststore.path: certs/transport.p12`
 
 Ensure that you have the necessary conditions in place to easily access Elasticsearch.
 
@@ -57,12 +55,14 @@ Open the index.js file and modify the node property of the Client object to matc
 
 4. Start the API:
 
-`npm start`
+- Run Elasticsearch: `bin/elasticsearch.bat`
+The Elasticsearch will start running on http://localhost:8080
 
+- `npm start`
 The API will start running on http://localhost:3000.
 
 ## API Endpoints
-The API exposes the following endpoints:
+The API exposes the following endpoints. In this section, I only illustrate the CRUD API for the Book. The illustration for Comment will be presented in the Readme.md file of the frontend branch:
 
 - **GET /books**
 
@@ -109,11 +109,28 @@ Here are the API test illustrations use Thunder Client of Visual Studio (similar
 
 1. **GET /books**
 
+![image](https://github.com/tunth301201/FcorpBook/assets/92015206/645d4276-835c-4fb1-bcfb-b841c7be9034)
+
+![image](https://github.com/tunth301201/FcorpBook/assets/92015206/bba83b65-e8e4-4bc5-bc54-75e0bf200016)
+
 
 2. **GET /books/:id**
+
+![image](https://github.com/tunth301201/FcorpBook/assets/92015206/b8b0c7ee-0cb3-4602-b846-962581d72a17)
+
+![image](https://github.com/tunth301201/FcorpBook/assets/92015206/09071324-962b-4775-b8ce-d8b75bc88fc0)
 
 
 3. **POST /books**
 
+![image](https://github.com/tunth301201/FcorpBook/assets/92015206/83e9c6a1-2b5a-448d-9c03-1648409fb983)
+
+![image](https://github.com/tunth301201/FcorpBook/assets/92015206/7fcdf3a5-2b99-4f8f-88eb-527cd2e1bec1)
+
 
 4. **PUT /books/:id**
+
+![image](https://github.com/tunth301201/FcorpBook/assets/92015206/a6cc93e3-d0eb-43d4-83fa-5e5eba7b8e97)
+
+![image](https://github.com/tunth301201/FcorpBook/assets/92015206/dde427e7-8e36-427a-9e36-168745b29796)
+
