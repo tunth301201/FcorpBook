@@ -19,7 +19,7 @@ Before running the Vue project, make sure you have the backend running at URL ht
 
 3. Start the Vue project
 
-   `npm run serve`
+  `npm run serve`
   The project will start running on http://localhost:8080
 
 4. Access the page of the specific book
