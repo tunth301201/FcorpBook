@@ -1,5 +1,11 @@
 const fastify = require('fastify')();
 const { Client } = require('@elastic/elasticsearch');
+const fastifyCors = require('@fastify/cors');
+
+// Enable CORS
+fastify.register(fastifyCors, {
+  origin: 'http://localhost:8080',
+});
 
 // Create an Elasticsearch client
 const client = new Client({ node: 'http://localhost:9200' });
@@ -135,12 +141,15 @@ fastify.get('/books/comments/:bookId', async (request, reply) => {
       },
     });
 
-    const comments = response.hits.hits.map((hit) => hit._source);
+    const comments = response.hits.hits;
     reply.send(comments);
   } catch (error) {
     console.error(error);
     reply.status(500).send('Internal Server Error');
   }
+
+
+  // await client.indices.delete({ index: 'comments' });
 });
 
 
@@ -162,6 +171,7 @@ fastify.post('/books/comments/:bookId', async (request, reply) => {
         bookId,
         name,
         text,
+        replies: [], 
       },
     });
 
@@ -185,34 +195,57 @@ fastify.post('/books/comments/:bookId/replies/:commentId', async (request, reply
   }
 
   try {
-    const response = await client.index({
+    const commentResponse = await client.get({
       index: 'comments',
+      id: commentId,
+    });
+
+    console.log("commentResponse", commentResponse)
+
+    const comment = commentResponse._source;
+    const replyComment = {
+      replyId: generateUniqueReplyId(), 
+      name,
+      text,
+    };
+
+    // Add the new reply comment to the 'replies' array
+    comment.replies.push(replyComment);
+
+    // Update the comment in Elasticsearch with the new 'replies' array
+    const updateResponse = await client.update({
+      index: 'comments',
+      id: commentId,
       body: {
-        bookId,
-        name,
-        text,
-        parentId: commentId,
+        doc: {
+          replies: comment.replies,
+        },
       },
     });
 
-    reply.send("Created a new reply with id " + response._id);
+    reply.send("Created a new reply with id " + replyComment.replyId);
   } catch (error) {
     console.error(error);
     reply.status(500).send('Internal Server Error');
   }
 });
 
+function generateUniqueReplyId() {
+  const timestamp = Date.now();
+  const randomNum = Math.floor(Math.random() * 1000);
+
+  return `${timestamp}-${randomNum}`;
+}
+
+
+
+
+
 
 // API edit a comment of a specific book in Elasticsearch
 fastify.put('/books/comments/:bookId/:commentId', async (request, reply) => {
   const { bookId, commentId } = request.params;
-  const { name, text } = request.body;
-
-  // Validate incoming data
-  if (!name && !text) {
-    reply.status(400).send('At least one field must be provided for update');
-    return;
-  }
+  const { text } = request.body;
 
   try {
     const response = await client.update({
@@ -220,7 +253,6 @@ fastify.put('/books/comments/:bookId/:commentId', async (request, reply) => {
       id: commentId,
       body: {
         doc: {
-          name,
           text,
         },
       },

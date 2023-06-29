@@ -7,6 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "@elastic/elasticsearch": "^8.8.1",
+    "@fastify/cors": "^8.3.0",
     "fastify": "^4.18.0",
     "nodemon": "^2.0.22"
   },
