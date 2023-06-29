@@ -62,7 +62,7 @@ The Elasticsearch will start running on http://localhost:9200
 The API will start running on http://localhost:3000.
 
 ## API Endpoints
-The API exposes the following endpoints. In this section, I only illustrate the CRUD API for the Book. The illustration for Comment will be presented in the Readme.md file of the frontend branch:
+The API exposes the following endpoints:
 
 - **GET /books**
 
@@ -105,7 +105,7 @@ Make sure to replace :id, :bookId, and :commentId with the appropriate values wh
 Please note that the API expects the request body to be in JSON format and follows the RESTful principles for the different CRUD operations.
 
 ## Illustration
-Here are the API test illustrations use Thunder Client of Visual Studio (similar to Postman):
+In this section, I only illustrate the CRUD API for the Book. The illustration for Comment will be presented in the Readme.md file of the frontend branch. Here are the API test illustrations use Thunder Client of Visual Studio (similar to Postman):
 
 1. **GET /books**
 
